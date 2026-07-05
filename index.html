@@ -609,6 +609,18 @@
             </svg>
             PLAY NOW
           </a>
+          <!-- [cloud] Account link — shown only when a cloud API base is configured -->
+          <a id="cc-account-link" class="play-button" href="#" hidden style="font-size:0.85em">Account</a>
+          <script>
+            // [cloud] The static site has no build-time env. Reveal the Account link only when
+            // a cloud API URL is known (set window.CC_API_URL before this script, or leave unset
+            // to keep the site fully offline as today). Points at the server's /account/ page.
+            (function () {
+              var base = window.CC_API_URL || null;
+              var link = document.getElementById('cc-account-link');
+              if (base && link) { link.href = base.replace(/\/$/, '') + '/account/'; link.hidden = false; }
+            })();
+          </script>
           <span class="device-note">works on phone + desktop.</span>
         </div>
         <div class="cta-row" style="margin-top:14px">
