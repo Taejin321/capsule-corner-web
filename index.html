@@ -1,0 +1,849 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Capsule Corner</title>
+  <meta name="description" content="Merge glowing capsules, hatch ugly-cute Fuzzlings, fill your sticker book, and decorate a cozy Y2K room.">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-0: #1c1229;
+      --bg-1: #241633;
+      --bg-2: #3d2c54;
+      --ink: #f4ecff;
+      --ink-dim: #c8b9ea;
+      --ink-soft: #9f8bc4;
+      --line: rgba(255, 246, 236, 0.22);
+      --panel: rgba(255, 246, 236, 0.105);
+      --panel-strong: rgba(255, 246, 236, 0.16);
+      --pink: #ff5cc8;
+      --pink-soft: #ff9db8;
+      --aqua: #5ce1ff;
+      --mint: #5fe6d0;
+      --gold: #ffd75c;
+      --crt: #ffe29a;
+      --lilac: #b79cff;
+      --outline: #4a3b2a;
+      --cream: #fff6ec;
+      --shadow: rgba(12, 8, 22, 0.55);
+      --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    html {
+      min-height: 100%;
+      background: var(--bg-0);
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      font-family: var(--font);
+      color: var(--ink);
+      background:
+        radial-gradient(58rem 33rem at 50% -5%, rgba(255, 226, 154, 0.14), transparent 64%),
+        radial-gradient(34rem 30rem at 10% 72%, rgba(95, 230, 208, 0.09), transparent 68%),
+        radial-gradient(32rem 31rem at 92% 70%, rgba(255, 92, 200, 0.12), transparent 70%),
+        radial-gradient(90rem 54rem at 50% 0%, var(--bg-2), var(--bg-1) 43%, var(--bg-0) 100%);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    body::before {
+      z-index: 0;
+      opacity: 0.78;
+      background-image:
+        radial-gradient(circle at 12% 18%, rgba(255, 246, 236, 0.75) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 28% 34%, rgba(92, 225, 255, 0.72) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 62% 16%, rgba(255, 215, 92, 0.78) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 82% 30%, rgba(255, 92, 200, 0.68) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 46% 74%, rgba(255, 246, 236, 0.58) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 72% 86%, rgba(92, 225, 255, 0.54) 0 1px, transparent 1.5px);
+      background-size: 210px 180px, 270px 230px, 320px 210px, 250px 280px, 220px 260px, 310px 260px;
+      animation: star-drift 26s linear infinite;
+    }
+
+    body::after {
+      z-index: 1;
+      opacity: 0.42;
+      background:
+        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.07) 0, rgba(0, 0, 0, 0.07) 1px, transparent 1px, transparent 4px),
+        radial-gradient(85rem 44rem at 50% 48%, transparent 45%, rgba(9, 6, 18, 0.55) 100%);
+      mix-blend-mode: soft-light;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    img,
+    svg {
+      display: block;
+      max-width: 100%;
+    }
+
+    .page {
+      position: relative;
+      z-index: 2;
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 24px 0 28px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 28px;
+      align-items: center;
+      min-height: 88vh;
+      padding: 28px 0 18px;
+    }
+
+    .hero-copy {
+      max-width: 680px;
+    }
+
+    .brand {
+      margin: 0 0 16px;
+      font-size: 4rem;
+      line-height: 0.92;
+      font-weight: 950;
+      letter-spacing: 0;
+      color: var(--cream);
+      text-shadow:
+        0 0 16px rgba(255, 92, 200, 0.46),
+        0 0 38px rgba(92, 225, 255, 0.24),
+        0 6px 0 rgba(74, 59, 42, 0.32);
+    }
+
+    .tagline {
+      margin: 0;
+      font-size: 1.32rem;
+      line-height: 1.25;
+      font-weight: 850;
+      color: var(--crt);
+      text-shadow: 0 0 18px rgba(255, 226, 154, 0.33);
+    }
+
+    .pitch {
+      max-width: 590px;
+      margin: 18px 0 0;
+      color: var(--ink-dim);
+      font-size: 1.04rem;
+      line-height: 1.7;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    .play-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 58px;
+      padding: 0 28px;
+      border: 2px solid rgba(255, 246, 236, 0.78);
+      border-radius: 999px;
+      color: #2b1e3d;
+      background:
+        radial-gradient(circle at 25% 20%, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0) 28%),
+        linear-gradient(135deg, var(--crt), var(--pink-soft) 52%, var(--aqua));
+      box-shadow:
+        inset 0 2px 0 rgba(255, 255, 255, 0.95),
+        inset 0 -8px 14px rgba(74, 59, 42, 0.16),
+        0 0 20px rgba(255, 92, 200, 0.58),
+        0 0 42px rgba(92, 225, 255, 0.26),
+        0 14px 26px var(--shadow);
+      font-size: 1rem;
+      font-weight: 950;
+      text-decoration: none;
+      letter-spacing: 0;
+      transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
+      animation: button-pulse 3.6s ease-in-out infinite;
+    }
+
+    .play-button svg {
+      width: 20px;
+      height: 20px;
+      margin-right: 9px;
+      color: #2b1e3d;
+      filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.5));
+    }
+
+    .play-button:hover,
+    .play-button:focus-visible {
+      transform: translateY(-2px) scale(1.015);
+      filter: saturate(1.08);
+      box-shadow:
+        inset 0 2px 0 rgba(255, 255, 255, 0.98),
+        inset 0 -8px 14px rgba(74, 59, 42, 0.14),
+        0 0 24px rgba(255, 92, 200, 0.78),
+        0 0 52px rgba(92, 225, 255, 0.35),
+        0 18px 30px var(--shadow);
+    }
+
+    .play-button:focus-visible {
+      outline: 3px solid var(--cream);
+      outline-offset: 5px;
+    }
+
+    .device-note {
+      color: var(--ink-dim);
+      font-size: 0.94rem;
+      line-height: 1.35;
+    }
+
+    .hero-stage {
+      position: relative;
+      min-height: 370px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        radial-gradient(19rem 13rem at 54% 35%, rgba(255, 226, 154, 0.18), transparent 70%),
+        linear-gradient(180deg, rgba(255, 246, 236, 0.12), rgba(255, 246, 236, 0.045));
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.28),
+        inset 0 -34px 60px rgba(12, 8, 22, 0.18),
+        0 24px 70px rgba(12, 8, 22, 0.4);
+      overflow: hidden;
+    }
+
+    .hero-stage::before {
+      content: "";
+      position: absolute;
+      left: 7%;
+      right: 7%;
+      bottom: 13%;
+      height: 23%;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(255, 226, 154, 0.18), transparent 72%);
+      filter: blur(2px);
+    }
+
+    .desk-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 21%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 246, 236, 0.24), transparent);
+    }
+
+    .hero-toy {
+      position: absolute;
+      filter: drop-shadow(0 18px 22px rgba(12, 8, 22, 0.38));
+      animation: floaty 5.4s ease-in-out infinite;
+    }
+
+    .hero-toy svg {
+      overflow: visible;
+    }
+
+    .toy-a {
+      width: 44%;
+      left: 6%;
+      top: 12%;
+      animation-delay: -0.8s;
+    }
+
+    .toy-b {
+      width: 30%;
+      right: 8%;
+      top: 10%;
+      animation-delay: -1.8s;
+    }
+
+    .toy-c {
+      width: 28%;
+      right: 13%;
+      bottom: 12%;
+      animation-delay: -2.7s;
+    }
+
+    .toy-d {
+      width: 24%;
+      left: 18%;
+      bottom: 11%;
+      animation-delay: -3.4s;
+    }
+
+    .toy-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin: 20px 0 36px;
+    }
+
+    .toy-card {
+      min-height: 150px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 24% 12%, rgba(255, 255, 255, 0.18), transparent 30%),
+        linear-gradient(180deg, rgba(255, 246, 236, 0.14), rgba(255, 246, 236, 0.055));
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.22),
+        0 16px 34px rgba(12, 8, 22, 0.28);
+    }
+
+    .toy-card svg {
+      width: 100%;
+      height: 108px;
+      object-fit: contain;
+      overflow: visible;
+      animation: floaty-small 6s ease-in-out infinite;
+    }
+
+    .toy-card:nth-child(2) svg {
+      animation-delay: -1.3s;
+    }
+
+    .toy-card:nth-child(3) svg {
+      animation-delay: -2.1s;
+    }
+
+    .toy-card:nth-child(4) svg {
+      animation-delay: -3s;
+    }
+
+    .toy-card figcaption {
+      margin-top: 10px;
+      color: var(--ink-dim);
+      font-size: 0.9rem;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .features {
+      padding: 16px 0 32px;
+    }
+
+    .section-title {
+      max-width: 700px;
+      margin: 0 0 18px;
+      color: var(--cream);
+      font-size: 2rem;
+      line-height: 1.05;
+      font-weight: 950;
+      letter-spacing: 0;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .feature-card {
+      position: relative;
+      min-height: 178px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 82% 14%, rgba(255, 226, 154, 0.12), transparent 35%),
+        linear-gradient(180deg, var(--panel-strong), var(--panel));
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.24),
+        0 16px 34px rgba(12, 8, 22, 0.28);
+      overflow: hidden;
+    }
+
+    .feature-card::after {
+      content: "";
+      position: absolute;
+      width: 116px;
+      height: 116px;
+      right: -44px;
+      bottom: -48px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(92, 225, 255, 0.2), transparent 66%);
+    }
+
+    .feature-icon {
+      width: 54px;
+      height: 54px;
+      margin-bottom: 16px;
+      color: var(--crt);
+      filter: drop-shadow(0 0 10px rgba(255, 226, 154, 0.26));
+    }
+
+    .feature-card h3 {
+      margin: 0;
+      color: var(--cream);
+      font-size: 1.2rem;
+      line-height: 1.15;
+      font-weight: 920;
+      letter-spacing: 0;
+    }
+
+    .feature-card p {
+      margin: 10px 0 0;
+      color: var(--ink-dim);
+      font-size: 0.98rem;
+      line-height: 1.6;
+    }
+
+    .availability {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin: 12px 0 34px;
+      padding: 10px 14px;
+      border: 1px solid rgba(92, 225, 255, 0.28);
+      border-radius: 999px;
+      color: var(--ink-dim);
+      background: rgba(92, 225, 255, 0.07);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+      font-size: 0.92rem;
+      font-weight: 750;
+    }
+
+    .availability svg {
+      width: 18px;
+      height: 18px;
+      color: var(--aqua);
+    }
+
+    .footer {
+      padding: 20px 0 4px;
+      color: var(--ink-soft);
+      font-size: 0.88rem;
+      text-align: center;
+    }
+
+    .outline {
+      stroke: var(--outline);
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .thin-outline {
+      stroke: var(--outline);
+      stroke-width: 2.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    @keyframes floaty {
+      0%,
+      100% {
+        transform: translateY(0) rotate(-1deg);
+      }
+      50% {
+        transform: translateY(-12px) rotate(1.5deg);
+      }
+    }
+
+    @keyframes floaty-small {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-7px);
+      }
+    }
+
+    @keyframes button-pulse {
+      0%,
+      100% {
+        box-shadow:
+          inset 0 2px 0 rgba(255, 255, 255, 0.95),
+          inset 0 -8px 14px rgba(74, 59, 42, 0.16),
+          0 0 18px rgba(255, 92, 200, 0.48),
+          0 0 38px rgba(92, 225, 255, 0.22),
+          0 14px 26px var(--shadow);
+      }
+      50% {
+        box-shadow:
+          inset 0 2px 0 rgba(255, 255, 255, 0.98),
+          inset 0 -8px 14px rgba(74, 59, 42, 0.14),
+          0 0 28px rgba(255, 92, 200, 0.75),
+          0 0 58px rgba(92, 225, 255, 0.34),
+          0 14px 26px var(--shadow);
+      }
+    }
+
+    @keyframes star-drift {
+      from {
+        background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
+      }
+      to {
+        background-position: 210px 180px, -270px 230px, 320px -210px, -250px -280px, 220px 260px, -310px 260px;
+      }
+    }
+
+    @media (min-width: 680px) {
+      .page {
+        width: min(1120px, calc(100% - 48px));
+        padding-top: 34px;
+      }
+
+      .hero {
+        min-height: 82vh;
+        grid-template-columns: minmax(0, 0.94fr) minmax(330px, 0.86fr);
+        gap: 34px;
+      }
+
+      .brand {
+        font-size: 5.8rem;
+      }
+
+      .tagline {
+        font-size: 1.55rem;
+      }
+
+      .toy-row {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        margin-top: 10px;
+      }
+
+      .feature-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 980px) {
+      .brand {
+        font-size: 6.7rem;
+      }
+
+      .section-title {
+        font-size: 2.45rem;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .page {
+        width: min(100% - 24px, 420px);
+        padding-top: 16px;
+      }
+
+      .hero {
+        min-height: auto;
+        padding-top: 26px;
+      }
+
+      .brand {
+        font-size: 3.38rem;
+      }
+
+      .tagline {
+        font-size: 1.18rem;
+      }
+
+      .pitch {
+        font-size: 0.98rem;
+      }
+
+      .play-button {
+        width: 100%;
+      }
+
+      .device-note {
+        width: 100%;
+        text-align: center;
+      }
+
+      .hero-stage {
+        min-height: 330px;
+      }
+
+      .toy-card {
+        min-height: 132px;
+        padding: 12px;
+      }
+
+      .toy-card svg {
+        height: 92px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero" aria-labelledby="game-title">
+      <div class="hero-copy">
+        <h1 class="brand" id="game-title">Capsule Corner</h1>
+        <p class="tagline">Merge. Hatch. Collect. Cozy.</p>
+        <p class="pitch">
+          Merge glowing capsules on a Y2K desk, hatch ugly-cute Fuzzlings, then renovate your cozy nostalgia-core room one blind-box reveal at a time.
+        </p>
+        <div class="cta-row">
+          <a class="play-button" href="./play/">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 5.5v13l10-6.5z" fill="currentColor"></path>
+            </svg>
+            PLAY NOW
+          </a>
+          <span class="device-note">works on phone + desktop.</span>
+        </div>
+      </div>
+
+      <div class="hero-stage" aria-hidden="true">
+        <span class="desk-line"></span>
+        <div class="hero-toy toy-a">
+          <svg viewBox="0 0 220 190" role="img" aria-label="Glowing merge capsule">
+            <defs>
+              <linearGradient id="heroCapsuleA" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#fff6ec"></stop>
+                <stop offset="0.45" stop-color="#ff9db8"></stop>
+                <stop offset="1" stop-color="#5ce1ff"></stop>
+              </linearGradient>
+              <linearGradient id="heroCapsuleB" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#ffe29a"></stop>
+                <stop offset="0.5" stop-color="#b79cff"></stop>
+                <stop offset="1" stop-color="#5fe6d0"></stop>
+              </linearGradient>
+              <filter id="heroGlow" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="7" result="blur"></feGaussianBlur>
+                <feMerge>
+                  <feMergeNode in="blur"></feMergeNode>
+                  <feMergeNode in="SourceGraphic"></feMergeNode>
+                </feMerge>
+              </filter>
+            </defs>
+            <ellipse cx="108" cy="145" rx="76" ry="19" fill="#120b20" opacity="0.25"></ellipse>
+            <g filter="url(#heroGlow)">
+              <rect x="42" y="54" width="136" height="62" rx="31" fill="url(#heroCapsuleA)" class="outline" transform="rotate(-16 110 85)"></rect>
+              <path d="M104 45 l20 76" class="thin-outline" opacity="0.36"></path>
+              <rect x="54" y="80" width="112" height="44" rx="22" fill="url(#heroCapsuleB)" class="outline" transform="rotate(15 110 102)"></rect>
+              <path d="M106 77 l-13 53" class="thin-outline" opacity="0.35"></path>
+            </g>
+            <path d="M174 35 q0 10 10 10 q-10 0 -10 10 q0 -10 -10 -10 q10 0 10 -10z" fill="#fff6ec"></path>
+            <path d="M47 32 q0 7 7 7 q-7 0 -7 7 q0 -7 -7 -7 q7 0 7 -7z" fill="#ffd75c"></path>
+          </svg>
+        </div>
+
+        <div class="hero-toy toy-b">
+          <svg viewBox="0 0 130 150" role="img" aria-label="Ugly-cute Fuzzling">
+            <defs>
+              <linearGradient id="heroFuzzBody" x1="0" y1="0" x2="0.4" y2="1">
+                <stop offset="0" stop-color="#b7f5d8"></stop>
+                <stop offset="1" stop-color="#5fe6d0"></stop>
+              </linearGradient>
+            </defs>
+            <ellipse cx="65" cy="132" rx="41" ry="10" fill="#120b20" opacity="0.27"></ellipse>
+            <circle cx="43" cy="36" r="14" fill="#b7f5d8" class="outline"></circle>
+            <circle cx="89" cy="39" r="10" fill="#b7f5d8" class="outline"></circle>
+            <path d="M65 25 C91 24 110 45 108 72 C106 102 88 124 61 124 C35 124 21 103 23 75 C25 48 39 27 65 25 Z" fill="url(#heroFuzzBody)" class="outline"></path>
+            <ellipse cx="48" cy="50" rx="14" ry="9" fill="#fff6ec" opacity="0.32"></ellipse>
+            <circle cx="51" cy="70" r="8" fill="#fff6ec" class="thin-outline"></circle>
+            <circle cx="51" cy="70" r="3.4" fill="#4a3b2a"></circle>
+            <path d="M76 74 q7 -6 14 0" fill="none" class="outline"></path>
+            <path d="M54 91 q11 10 22 0" fill="none" class="outline"></path>
+            <ellipse cx="36" cy="86" rx="9" ry="5" fill="#ff9db8" opacity="0.7"></ellipse>
+            <ellipse cx="91" cy="89" rx="8" ry="5" fill="#ff9db8" opacity="0.7"></ellipse>
+            <path d="M105 26 q0 7 7 7 q-7 0 -7 7 q0 -7 -7 -7 q7 0 7 -7z" fill="#ffe29a"></path>
+          </svg>
+        </div>
+
+        <div class="hero-toy toy-c">
+          <svg viewBox="0 0 132 132" role="img" aria-label="Sticker book portrait">
+            <rect x="20" y="18" width="92" height="98" rx="8" fill="#fff6ec" class="outline"></rect>
+            <path d="M34 18 v98" class="thin-outline" opacity="0.45"></path>
+            <path d="M46 34 h48 M46 100 h34" class="thin-outline" opacity="0.22"></path>
+            <circle cx="70" cy="66" r="34" fill="#b79cff" opacity="0.27"></circle>
+            <path d="M70 42 C86 42 98 53 98 68 C98 87 86 98 69 98 C51 98 40 87 40 70 C40 53 52 43 70 42 Z" fill="#ff9db8" class="outline"></path>
+            <circle cx="58" cy="65" r="5" fill="#4a3b2a"></circle>
+            <circle cx="82" cy="68" r="6" fill="#4a3b2a"></circle>
+            <path d="M63 82 q8 7 16 -1" fill="none" class="outline"></path>
+            <path d="M102 38 q0 6 6 6 q-6 0 -6 6 q0 -6 -6 -6 q6 0 6 -6z" fill="#ffd75c"></path>
+          </svg>
+        </div>
+
+        <div class="hero-toy toy-d">
+          <svg viewBox="0 0 118 118" role="img" aria-label="Cozy room capsule lamp">
+            <defs>
+              <linearGradient id="lampCapsule" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#ffe29a"></stop>
+                <stop offset="0.58" stop-color="#ff9db8"></stop>
+                <stop offset="1" stop-color="#5ce1ff"></stop>
+              </linearGradient>
+            </defs>
+            <ellipse cx="59" cy="102" rx="40" ry="9" fill="#120b20" opacity="0.28"></ellipse>
+            <rect x="32" y="30" width="54" height="66" rx="27" fill="url(#lampCapsule)" class="outline"></rect>
+            <path d="M32 63 h54" class="thin-outline" opacity="0.42"></path>
+            <path d="M50 88 h18 M59 88 v15" class="outline"></path>
+            <path d="M42 20 q0 8 8 8 q-8 0 -8 8 q0 -8 -8 -8 q8 0 8 -8z" fill="#fff6ec"></path>
+            <path d="M90 22 q0 6 6 6 q-6 0 -6 6 q0 -6 -6 -6 q6 0 6 -6z" fill="#5ce1ff"></path>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="toy-row" aria-label="Capsule Corner collectibles">
+      <figure class="toy-card">
+        <svg viewBox="0 0 150 110" role="img" aria-label="Two glossy capsules merging">
+          <defs>
+            <linearGradient id="cardCapsuleOne" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#fff6ec"></stop>
+              <stop offset="0.5" stop-color="#ffd75c"></stop>
+              <stop offset="1" stop-color="#ff5cc8"></stop>
+            </linearGradient>
+            <linearGradient id="cardCapsuleTwo" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#5ce1ff"></stop>
+              <stop offset="1" stop-color="#b79cff"></stop>
+            </linearGradient>
+          </defs>
+          <ellipse cx="74" cy="92" rx="52" ry="9" fill="#120b20" opacity="0.23"></ellipse>
+          <rect x="18" y="37" width="74" height="34" rx="17" fill="url(#cardCapsuleOne)" class="outline" transform="rotate(-18 55 54)"></rect>
+          <rect x="60" y="34" width="74" height="34" rx="17" fill="url(#cardCapsuleTwo)" class="outline" transform="rotate(18 97 51)"></rect>
+          <path d="M75 24 v16 M67 32 h16" class="outline"></path>
+        </svg>
+        <figcaption>Glossy merge</figcaption>
+      </figure>
+
+      <figure class="toy-card">
+        <svg viewBox="0 0 150 110" role="img" aria-label="Cracked hatch capsule with Fuzzling peeking out">
+          <defs>
+            <linearGradient id="hatchShell" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#ffe29a"></stop>
+              <stop offset="1" stop-color="#ff9db8"></stop>
+            </linearGradient>
+          </defs>
+          <ellipse cx="75" cy="94" rx="46" ry="9" fill="#120b20" opacity="0.23"></ellipse>
+          <path d="M44 47 C45 24 62 14 78 16 C101 19 113 38 109 61 C106 82 91 91 72 89 C53 87 42 70 44 47 Z" fill="url(#hatchShell)" class="outline"></path>
+          <path d="M73 16 l-8 25 l12 8 l-15 16 l11 24" fill="none" class="outline"></path>
+          <path d="M76 43 C89 42 98 51 98 65 C98 78 88 86 74 86 C61 86 53 77 53 66 C53 53 62 44 76 43 Z" fill="#b7f5d8" class="thin-outline"></path>
+          <circle cx="69" cy="64" r="4" fill="#4a3b2a"></circle>
+          <path d="M82 65 q5 -4 10 0" fill="none" class="thin-outline"></path>
+          <ellipse cx="63" cy="74" rx="5" ry="3" fill="#ff9db8" opacity="0.7"></ellipse>
+        </svg>
+        <figcaption>Surprise hatch</figcaption>
+      </figure>
+
+      <figure class="toy-card">
+        <svg viewBox="0 0 150 110" role="img" aria-label="Lopsided pastel Fuzzling">
+          <defs>
+            <linearGradient id="blobFriend" x1="0" y1="0" x2="0.4" y2="1">
+              <stop offset="0" stop-color="#7ee8fa"></stop>
+              <stop offset="1" stop-color="#5fe6d0"></stop>
+            </linearGradient>
+          </defs>
+          <ellipse cx="75" cy="95" rx="42" ry="8" fill="#120b20" opacity="0.22"></ellipse>
+          <path d="M51 34 l-7 -18 l18 12z" fill="#7ee8fa" class="outline"></path>
+          <path d="M97 34 l11 -15 l-5 22z" fill="#7ee8fa" class="outline"></path>
+          <path d="M73 24 C94 22 111 38 111 60 C111 83 94 94 73 94 C51 94 38 82 39 61 C40 41 53 26 73 24 Z" fill="url(#blobFriend)" class="outline"></path>
+          <ellipse cx="61" cy="45" rx="12" ry="8" fill="#fff6ec" opacity="0.3"></ellipse>
+          <circle cx="63" cy="61" r="5" fill="#4a3b2a"></circle>
+          <circle cx="88" cy="64" r="7" fill="#fff6ec" class="thin-outline"></circle>
+          <circle cx="87" cy="65" r="3" fill="#4a3b2a"></circle>
+          <path d="M66 78 q8 6 17 -1" fill="none" class="outline"></path>
+          <ellipse cx="52" cy="73" rx="6" ry="4" fill="#ff9db8" opacity="0.72"></ellipse>
+          <ellipse cx="98" cy="75" rx="6" ry="4" fill="#ff9db8" opacity="0.72"></ellipse>
+        </svg>
+        <figcaption>Ugly-cute pal</figcaption>
+      </figure>
+
+      <figure class="toy-card">
+        <svg viewBox="0 0 150 110" role="img" aria-label="Cozy sticker book and room decor">
+          <rect x="26" y="22" width="70" height="66" rx="8" fill="#fff6ec" class="outline"></rect>
+          <path d="M42 22 v66" class="thin-outline" opacity="0.45"></path>
+          <circle cx="69" cy="56" r="22" fill="#ff9db8" opacity="0.38"></circle>
+          <path d="M59 47 C72 43 83 50 83 63 C83 76 72 81 61 78 C50 75 46 65 50 56 C52 51 55 48 59 47 Z" fill="#ffd75c" class="thin-outline"></path>
+          <circle cx="61" cy="62" r="3.4" fill="#4a3b2a"></circle>
+          <path d="M73 63 q4 -3 8 1" fill="none" class="thin-outline"></path>
+          <path d="M108 43 h14 v43 h-14z" fill="#b79cff" class="outline"></path>
+          <path d="M102 86 h26" class="outline"></path>
+          <path d="M115 27 q0 6 6 6 q-6 0 -6 6 q0 -6 -6 -6 q6 0 6 -6z" fill="#5ce1ff"></path>
+        </svg>
+        <figcaption>Cozy collection</figcaption>
+      </figure>
+    </section>
+
+    <section class="features" aria-labelledby="feature-title">
+      <h2 class="section-title" id="feature-title">A tiny desk full of glowing little rituals.</h2>
+      <div class="feature-grid">
+        <article class="feature-card">
+          <svg class="feature-icon" viewBox="0 0 64 64" aria-hidden="true">
+            <rect x="8" y="24" width="38" height="18" rx="9" fill="#ffd75c" class="outline" transform="rotate(-18 27 33)"></rect>
+            <rect x="20" y="24" width="38" height="18" rx="9" fill="#5ce1ff" class="outline" transform="rotate(18 39 33)"></rect>
+            <path d="M32 10 v12 M26 16 h12" fill="none" class="outline"></path>
+          </svg>
+          <h3>Merge capsules</h3>
+          <p>Slide soft gel capsules together and build toward the next glowing reveal.</p>
+        </article>
+
+        <article class="feature-card">
+          <svg class="feature-icon" viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M20 31 C21 16 31 10 42 14 C54 19 58 32 52 45 C47 56 34 59 24 52 C17 47 16 39 20 31 Z" fill="#ff9db8" class="outline"></path>
+            <path d="M36 14 l-6 15 l8 7 l-10 10 l5 11" fill="none" class="outline"></path>
+            <circle cx="33" cy="39" r="4" fill="#4a3b2a"></circle>
+            <path d="M43 40 q4 -4 8 0" fill="none" class="thin-outline"></path>
+          </svg>
+          <h3>Hatch surprise Fuzzlings</h3>
+          <p>Crack capsules open into lopsided pastel friends with crooked smiles and shiny little quirks.</p>
+        </article>
+
+        <article class="feature-card">
+          <svg class="feature-icon" viewBox="0 0 64 64" aria-hidden="true">
+            <rect x="13" y="9" width="38" height="48" rx="6" fill="#fff6ec" class="outline"></rect>
+            <path d="M25 9 v48" fill="none" class="thin-outline"></path>
+            <circle cx="39" cy="31" r="11" fill="#b79cff" opacity="0.55" class="thin-outline"></circle>
+            <path d="M34 34 q5 4 10 0" fill="none" class="thin-outline"></path>
+          </svg>
+          <h3>Fill your sticker book</h3>
+          <p>Collect each portrait, chase the silhouettes, and make the page feel more complete every run.</p>
+        </article>
+
+        <article class="feature-card">
+          <svg class="feature-icon" viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M12 54 h40" fill="none" class="outline"></path>
+            <rect x="20" y="20" width="24" height="31" rx="12" fill="#ffe29a" class="outline"></rect>
+            <path d="M20 35 h24" fill="none" class="thin-outline"></path>
+            <path d="M32 51 v7" fill="none" class="outline"></path>
+            <path d="M48 13 q0 5 5 5 q-5 0 -5 5 q0 -5 -5 -5 q5 0 5 -5z" fill="#5ce1ff"></path>
+          </svg>
+          <h3>Decorate your room</h3>
+          <p>Turn blind-box wins into a cozy dusk corner with tiny lights, desk treasures, and soft glow.</p>
+        </article>
+      </div>
+    </section>
+
+    <p class="availability">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="5" y="3" width="7" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"></rect>
+        <rect x="14" y="6" width="6" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"></rect>
+        <path d="M7 20h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+      </svg>
+      works on phone + desktop.
+    </p>
+  </main>
+
+  <footer class="footer">(c) 2026 Capsule Corner</footer>
+</body>
+</html>
