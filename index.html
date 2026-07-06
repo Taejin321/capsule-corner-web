@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Capsule Corner</title>
   <meta name="description" content="Merge glowing capsules, hatch ugly-cute Fuzzlings, fill your sticker book, and decorate a cozy Y2K room.">
+  <link rel="icon" href="./art/icon.png" type="image/png">
   <style>
     *,
     *::before,
@@ -217,9 +218,7 @@
       min-height: 370px;
       border: 1px solid var(--line);
       border-radius: 8px;
-      background:
-        radial-gradient(19rem 13rem at 54% 35%, rgba(255, 226, 154, 0.18), transparent 70%),
-        linear-gradient(180deg, rgba(255, 246, 236, 0.12), rgba(255, 246, 236, 0.045));
+      background: rgba(255, 246, 236, 0.08);
       box-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.28),
         inset 0 -34px 60px rgba(12, 8, 22, 0.18),
@@ -227,63 +226,11 @@
       overflow: hidden;
     }
 
-    .hero-stage::before {
-      content: "";
-      position: absolute;
-      left: 7%;
-      right: 7%;
-      bottom: 13%;
-      height: 23%;
-      border-radius: 50%;
-      background: radial-gradient(ellipse, rgba(255, 226, 154, 0.18), transparent 72%);
-      filter: blur(2px);
-    }
-
-    .desk-line {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 21%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255, 246, 236, 0.24), transparent);
-    }
-
-    .hero-toy {
-      position: absolute;
-      filter: drop-shadow(0 18px 22px rgba(12, 8, 22, 0.38));
-      animation: floaty 5.4s ease-in-out infinite;
-    }
-
-    .hero-toy svg {
-      overflow: visible;
-    }
-
-    .toy-a {
-      width: 44%;
-      left: 6%;
-      top: 12%;
-      animation-delay: -0.8s;
-    }
-
-    .toy-b {
-      width: 30%;
-      right: 8%;
-      top: 10%;
-      animation-delay: -1.8s;
-    }
-
-    .toy-c {
-      width: 28%;
-      right: 13%;
-      bottom: 12%;
-      animation-delay: -2.7s;
-    }
-
-    .toy-d {
-      width: 24%;
-      left: 18%;
-      bottom: 11%;
-      animation-delay: -3.4s;
+    .hero-art {
+      width: 100%;
+      height: 100%;
+      min-height: 370px;
+      object-fit: cover;
     }
 
     .toy-row {
@@ -631,94 +578,7 @@
       </div>
 
       <div class="hero-stage" aria-hidden="true">
-        <span class="desk-line"></span>
-        <div class="hero-toy toy-a">
-          <svg viewBox="0 0 220 190" role="img" aria-label="Glowing merge capsule">
-            <defs>
-              <linearGradient id="heroCapsuleA" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#fff6ec"></stop>
-                <stop offset="0.45" stop-color="#ff9db8"></stop>
-                <stop offset="1" stop-color="#5ce1ff"></stop>
-              </linearGradient>
-              <linearGradient id="heroCapsuleB" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#ffe29a"></stop>
-                <stop offset="0.5" stop-color="#b79cff"></stop>
-                <stop offset="1" stop-color="#5fe6d0"></stop>
-              </linearGradient>
-              <filter id="heroGlow" x="-30%" y="-30%" width="160%" height="160%">
-                <feGaussianBlur stdDeviation="7" result="blur"></feGaussianBlur>
-                <feMerge>
-                  <feMergeNode in="blur"></feMergeNode>
-                  <feMergeNode in="SourceGraphic"></feMergeNode>
-                </feMerge>
-              </filter>
-            </defs>
-            <ellipse cx="108" cy="145" rx="76" ry="19" fill="#120b20" opacity="0.25"></ellipse>
-            <g filter="url(#heroGlow)">
-              <rect x="42" y="54" width="136" height="62" rx="31" fill="url(#heroCapsuleA)" class="outline" transform="rotate(-16 110 85)"></rect>
-              <path d="M104 45 l20 76" class="thin-outline" opacity="0.36"></path>
-              <rect x="54" y="80" width="112" height="44" rx="22" fill="url(#heroCapsuleB)" class="outline" transform="rotate(15 110 102)"></rect>
-              <path d="M106 77 l-13 53" class="thin-outline" opacity="0.35"></path>
-            </g>
-            <path d="M174 35 q0 10 10 10 q-10 0 -10 10 q0 -10 -10 -10 q10 0 10 -10z" fill="#fff6ec"></path>
-            <path d="M47 32 q0 7 7 7 q-7 0 -7 7 q0 -7 -7 -7 q7 0 7 -7z" fill="#ffd75c"></path>
-          </svg>
-        </div>
-
-        <div class="hero-toy toy-b">
-          <svg viewBox="0 0 130 150" role="img" aria-label="Ugly-cute Fuzzling">
-            <defs>
-              <linearGradient id="heroFuzzBody" x1="0" y1="0" x2="0.4" y2="1">
-                <stop offset="0" stop-color="#b7f5d8"></stop>
-                <stop offset="1" stop-color="#5fe6d0"></stop>
-              </linearGradient>
-            </defs>
-            <ellipse cx="65" cy="132" rx="41" ry="10" fill="#120b20" opacity="0.27"></ellipse>
-            <circle cx="43" cy="36" r="14" fill="#b7f5d8" class="outline"></circle>
-            <circle cx="89" cy="39" r="10" fill="#b7f5d8" class="outline"></circle>
-            <path d="M65 25 C91 24 110 45 108 72 C106 102 88 124 61 124 C35 124 21 103 23 75 C25 48 39 27 65 25 Z" fill="url(#heroFuzzBody)" class="outline"></path>
-            <ellipse cx="48" cy="50" rx="14" ry="9" fill="#fff6ec" opacity="0.32"></ellipse>
-            <circle cx="51" cy="70" r="8" fill="#fff6ec" class="thin-outline"></circle>
-            <circle cx="51" cy="70" r="3.4" fill="#4a3b2a"></circle>
-            <path d="M76 74 q7 -6 14 0" fill="none" class="outline"></path>
-            <path d="M54 91 q11 10 22 0" fill="none" class="outline"></path>
-            <ellipse cx="36" cy="86" rx="9" ry="5" fill="#ff9db8" opacity="0.7"></ellipse>
-            <ellipse cx="91" cy="89" rx="8" ry="5" fill="#ff9db8" opacity="0.7"></ellipse>
-            <path d="M105 26 q0 7 7 7 q-7 0 -7 7 q0 -7 -7 -7 q7 0 7 -7z" fill="#ffe29a"></path>
-          </svg>
-        </div>
-
-        <div class="hero-toy toy-c">
-          <svg viewBox="0 0 132 132" role="img" aria-label="Sticker book portrait">
-            <rect x="20" y="18" width="92" height="98" rx="8" fill="#fff6ec" class="outline"></rect>
-            <path d="M34 18 v98" class="thin-outline" opacity="0.45"></path>
-            <path d="M46 34 h48 M46 100 h34" class="thin-outline" opacity="0.22"></path>
-            <circle cx="70" cy="66" r="34" fill="#b79cff" opacity="0.27"></circle>
-            <path d="M70 42 C86 42 98 53 98 68 C98 87 86 98 69 98 C51 98 40 87 40 70 C40 53 52 43 70 42 Z" fill="#ff9db8" class="outline"></path>
-            <circle cx="58" cy="65" r="5" fill="#4a3b2a"></circle>
-            <circle cx="82" cy="68" r="6" fill="#4a3b2a"></circle>
-            <path d="M63 82 q8 7 16 -1" fill="none" class="outline"></path>
-            <path d="M102 38 q0 6 6 6 q-6 0 -6 6 q0 -6 -6 -6 q6 0 6 -6z" fill="#ffd75c"></path>
-          </svg>
-        </div>
-
-        <div class="hero-toy toy-d">
-          <svg viewBox="0 0 118 118" role="img" aria-label="Cozy room capsule lamp">
-            <defs>
-              <linearGradient id="lampCapsule" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#ffe29a"></stop>
-                <stop offset="0.58" stop-color="#ff9db8"></stop>
-                <stop offset="1" stop-color="#5ce1ff"></stop>
-              </linearGradient>
-            </defs>
-            <ellipse cx="59" cy="102" rx="40" ry="9" fill="#120b20" opacity="0.28"></ellipse>
-            <rect x="32" y="30" width="54" height="66" rx="27" fill="url(#lampCapsule)" class="outline"></rect>
-            <path d="M32 63 h54" class="thin-outline" opacity="0.42"></path>
-            <path d="M50 88 h18 M59 88 v15" class="outline"></path>
-            <path d="M42 20 q0 8 8 8 q-8 0 -8 8 q0 -8 -8 -8 q8 0 8 -8z" fill="#fff6ec"></path>
-            <path d="M90 22 q0 6 6 6 q-6 0 -6 6 q0 -6 -6 -6 q6 0 6 -6z" fill="#5ce1ff"></path>
-          </svg>
-        </div>
+        <img class="hero-art" src="./art/hero.png" alt="" width="1024" height="1024">
       </div>
     </section>
 
